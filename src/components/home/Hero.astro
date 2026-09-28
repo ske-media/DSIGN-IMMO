@@ -1,0 +1,330 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import { img, hasImg } from '../../lib/images';
+import { IMAGES, SITE, type Locale } from '../../data/site';
+import Icon from '../Icon.astro';
+
+interface Props {
+  locale: Locale;
+  hero: {
+    eyebrow: string;
+    line1: string;
+    line2: string;
+    line3: string;
+    accent: string;
+    lead: string;
+    cta: string;
+    cta2: string;
+    tags: string[];
+  };
+}
+const { hero, locale } = Astro.props;
+const fr = locale === 'fr';
+
+const heroImg = img(IMAGES.hero);
+const depth = hasImg(IMAGES.heroDepth) ? await getImage({ src: img(IMAGES.heroDepth), width: 1024, format: 'jpg', quality: 60 }) : null;
+
+const facts = fr
+  ? [
+      ['Studio', SITE.name],
+      ['Fondatrice', SITE.founder],
+      ['Métier', "Architecture d'intérieur & design d'espace"],
+      ['Clients', 'Particuliers, loueurs professionnels, commerces, restaurants'],
+      ['Zone', SITE.city ? `${SITE.city} & ${SITE.region}` : 'France'],
+    ]
+  : [
+      ['Studio', SITE.name],
+      ['Founder', SITE.founder],
+      ['Practice', 'Interior architecture & spatial design'],
+      ['Clients', 'Private clients, landlords, shops, restaurants'],
+      ['Area', SITE.city ? `${SITE.city} & ${SITE.region}` : 'France'],
+    ];
+---
+
+<section class="hero" data-hero aria-labelledby="hero-title">
+  <div class="hero__media" data-hero-media>
+    <Picture
+      src={heroImg}
+      widths={[640, 960, 1280, 1920, 2560]}
+      sizes="100vw"
+      formats={['avif', 'webp']}
+      alt={fr
+        ? "Intérieur conçu par DSIGN IMMO : lumière naturelle, matières brutes et lignes calmes signées Elodie Notariani"
+        : 'Interior designed by DSIGN IMMO: natural light, raw materials and calm lines by Elodie Notariani'}
+      loading="eager"
+      fetchpriority="high"
+      decoding="sync"
+      pictureAttributes={{ class: 'hero__picture' }}
+    />
+    <canvas class="hero__gl" data-hero-gl data-depth={depth?.src} aria-hidden="true"></canvas>
+    <div class="hero__veil" aria-hidden="true"></div>
+  </div>
+
+  <div class="hero__content container">
+    <p class="hero__eyebrow eyebrow" data-hero-fade>{hero.eyebrow}</p>
+
+    <h1 class="hero__title display display--hero" id="hero-title" data-hero-title>
+      <span class="hero__line" data-hero-line>{hero.line1}</span>
+      <span class="hero__line hero__line--indent" data-hero-line>{hero.line2}</span>
+      <span class="hero__line hero__line--right" data-hero-line>
+        {hero.line3}
+        <em class="accent">{hero.accent}</em>
+      </span>
+    </h1>
+
+    <div class="hero__bottom">
+      <dl class="hero__card" data-hero-card data-hero-fade>
+        {
+          facts.map(([k, v]) => (
+            <div>
+              <dt>{k}</dt>
+              <dd>{v}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <div class="hero__cta" data-hero-fade>
+        <p class="lead">{hero.lead}</p>
+        <div class="hero__buttons">
+          <a href="/contact/" class="btn btn--light" data-magnet>
+            {hero.cta}
+            <Icon name="arrow" />
+          </a>
+          <a href="#manifeste" class="link-arrow">
+            {hero.cta2}
+            <Icon name="arrow-down" />
+          </a>
+        </div>
+      </div>
+
+      <ul class="hero__tags" data-hero-fade aria-label={fr ? 'Valeurs' : 'Values'}>
+        {hero.tags.map((t) => <li>— {t}</li>)}
+      </ul>
+    </div>
+  </div>
+
+  <a href="#manifeste" class="hero__scroll" aria-label={fr ? 'Faire défiler' : 'Scroll'} data-hero-fade>
+    <span></span>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-end;
+    color: var(--linen);
+    background: var(--ink);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero__media {
+    position: absolute;
+    inset: -8% 0 0 0;
+    z-index: -1;
+    will-change: transform;
+  }
+  .hero__media :global(picture),
+  .hero__media :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero__gl {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  .hero__gl.is-ready {
+    opacity: 1;
+  }
+  .hero__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(15, 14, 12, 0.45) 0%, rgba(15, 14, 12, 0.05) 35%, rgba(15, 14, 12, 0.15) 65%, rgba(15, 14, 12, 0.78) 100%),
+      linear-gradient(90deg, rgba(15, 14, 12, 0.35), transparent 50%);
+  }
+  .hero__content {
+    position: relative;
+    padding-top: 8rem;
+    padding-bottom: clamp(2rem, 5vh, 4rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 5vh, 4rem);
+    min-height: 100svh;
+    justify-content: flex-end;
+  }
+  .hero__eyebrow {
+    color: rgba(245, 241, 234, 0.75);
+  }
+  .hero__title {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    transform-style: preserve-3d;
+  }
+  .hero__line {
+    display: block;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+  .hero__line--indent {
+    padding-left: clamp(0px, 9vw, 12rem);
+  }
+  .hero__line--right {
+    align-self: flex-end;
+    text-align: right;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: baseline;
+    gap: 0 0.15em;
+    max-width: 100%;
+  }
+  .hero__line .accent {
+    font-size: 0.85em;
+    color: var(--sand);
+  }
+  .hero__bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
+    gap: var(--gutter);
+    align-items: end;
+  }
+  .hero__card {
+    margin: 0;
+    padding: 1.25rem 1.4rem;
+    border: 1px solid rgba(245, 241, 234, 0.22);
+    border-radius: 6px;
+    background: rgba(15, 14, 12, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: grid;
+    gap: 0.35rem;
+    font-size: var(--step--1);
+    max-width: 30rem;
+  }
+  .hero__card div {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 0.75rem;
+  }
+  .hero__card dt {
+    color: rgba(245, 241, 234, 0.6);
+  }
+  .hero__card dd {
+    margin: 0;
+    font-weight: 500;
+  }
+  .hero__cta {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    justify-self: end;
+    align-items: flex-end;
+    text-align: right;
+  }
+  .hero__cta .lead {
+    font-size: var(--step-0);
+    max-width: 36ch;
+    color: rgba(245, 241, 234, 0.88);
+  }
+  .hero__buttons {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .hero__tags {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+    color: rgba(245, 241, 234, 0.8);
+    text-align: right;
+  }
+  .hero__scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 1.2rem;
+    width: 1px;
+    height: 3.5rem;
+    background: rgba(245, 241, 234, 0.25);
+    overflow: hidden;
+  }
+  .hero__scroll span {
+    position: absolute;
+    inset: 0;
+    background: var(--linen);
+    transform-origin: top;
+    animation: scroll-hint 2.2s var(--ease-expo) infinite;
+  }
+  @keyframes scroll-hint {
+    0% { transform: scaleY(0); transform-origin: top; }
+    45% { transform: scaleY(1); transform-origin: top; }
+    55% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  @media (max-width: 1100px) {
+    .hero__bottom {
+      grid-template-columns: 1fr 1fr;
+    }
+    .hero__tags {
+      grid-column: 1 / -1;
+      flex-direction: row;
+      gap: 1.5rem;
+      text-align: left;
+    }
+  }
+  @media (max-width: 760px) {
+    .hero__content {
+      padding-top: 6rem;
+    }
+    .hero__line--indent {
+      padding-left: 0;
+    }
+    .hero__line--right {
+      align-self: flex-start;
+      text-align: left;
+      flex-wrap: wrap;
+    }
+    .hero__bottom {
+      grid-template-columns: 1fr;
+    }
+    .hero__card {
+      order: 2;
+      font-size: 0.78rem;
+      padding: 1rem;
+    }
+    .hero__card div {
+      grid-template-columns: 5rem 1fr;
+    }
+    .hero__cta {
+      order: 1;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .hero__buttons {
+      justify-content: flex-start;
+    }
+    .hero__tags {
+      order: 3;
+      flex-wrap: wrap;
+    }
+    .hero__scroll {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,164 @@
+---
+import { Picture } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Process from '../components/home/Process.astro';
+import Faq from '../components/home/Faq.astro';
+import Cta from '../components/home/Cta.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, EXPERTISES, PROCESS, HOME_FR } from '../data/site';
+import { img } from '../lib/images';
+
+const title = "Architecte d'intérieur — Particuliers, locatif, commerces & restaurants | DSIGN IMMO";
+const description =
+  "Architecte d'intérieur pour particuliers, loueurs professionnels, commerces, restaurants et bureaux. DSIGN IMMO conçoit et réalise des espaces uniques, fonctionnels et esthétiques : plans, 3D, matériaux, suivi de chantier.";
+
+const schema = [
+  {
+    '@type': 'Service',
+    serviceType: "Architecture d'intérieur",
+    provider: { '@id': `${SITE.url}/#organization` },
+    areaServed: { '@type': 'Country', name: 'France' },
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Expertises DSIGN IMMO',
+      itemListElement: EXPERTISES.map((e) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: e.seoTitle.split(' — ')[0], url: `${SITE.url}/${e.slug}/` },
+      })),
+    },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${SITE.url}/` },
+      { '@type': 'ListItem', position: 2, name: "Architecte d'intérieur", item: `${SITE.url}/architecte-interieur/` },
+    ],
+  },
+];
+---
+
+<Layout {title} {description} path="/architecte-interieur/" locale="fr" schema={schema}>
+  <PageHero
+    eyebrow="Expertises"
+    title="Architecte"
+    titleAccent="d'intérieur"
+    text="Conception et réalisation d'espaces intérieurs pour particuliers, loueurs professionnels, commerces et restaurants. Une méthode, trois univers, un seul niveau d'exigence."
+    crumbs={[
+      { href: '/', label: 'Accueil' },
+      { href: '/architecte-interieur/', label: "Architecte d'intérieur" },
+    ]}
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="intro">
+        <p class="lead fade-up">
+          Chez DSIGN IMMO, l'architecture d'intérieur commence par une question : comment allez-vous vivre, louer ou
+          travailler dans ce lieu ? La réponse dessine le plan, guide la lumière et choisit les matières. Le résultat
+          est un espace à votre image, fonctionnel et esthétique, qui tient dans le temps.
+        </p>
+      </div>
+
+      <ul class="offers">
+        {
+          EXPERTISES.map((e, i) => (
+            <li class="offer" id={e.slug}>
+              <figure class="offer__media reveal-img">
+                <Picture
+                  src={img(e.image)}
+                  widths={[500, 800, 1200]}
+                  sizes="(max-width: 900px) 100vw, 40vw"
+                  formats={['avif', 'webp']}
+                  alt={`${e.eyebrow.replace(/^\d+ — /, '')} : espace conçu par DSIGN IMMO`}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                />
+              </figure>
+              <div class="offer__body">
+                <p class="eyebrow fade-up">{e.eyebrow}</p>
+                <h2 class="h2">
+                  <span data-split>{e.title}</span> <span class="accent" data-split>{e.titleAccent}</span>
+                </h2>
+                <p class="fade-up measure">{e.intro}</p>
+                <ul class="offer__bullets fade-up" style="--delay:.1s">
+                  {e.bullets.map((b) => (
+                    <li>{b}</li>
+                  ))}
+                </ul>
+                <a href={`/${e.slug}/`} class="btn btn--ghost fade-up" style="--delay:.15s" data-magnet>
+                  En savoir plus
+                  <Icon name="arrow" />
+                </a>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Process head={HOME_FR.process} steps={PROCESS} />
+  <Faq head={HOME_FR.faq} />
+  <Cta cta={HOME_FR.cta} />
+</Layout>
+
+<style>
+  .intro {
+    margin-bottom: var(--section);
+    max-width: 60ch;
+  }
+  .intro .lead {
+    max-width: none;
+    font-size: var(--step-2);
+    line-height: 1.3;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .offer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 5vw, 6rem);
+    align-items: center;
+    padding-block: clamp(3rem, 6vw, 5rem);
+    border-top: 1px solid var(--line);
+  }
+  .offer:nth-child(even) .offer__media {
+    order: 2;
+  }
+  .offer__media {
+    aspect-ratio: 4 / 5;
+    border-radius: 6px;
+  }
+  .offer__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  .offer__body .h2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.3em;
+  }
+  .offer__bullets {
+    display: grid;
+    gap: 0.5rem;
+    color: var(--fg-muted);
+  }
+  .offer__bullets li::before {
+    content: '—';
+    margin-right: 0.6rem;
+    color: var(--terra);
+  }
+  @media (max-width: 900px) {
+    .offer {
+      grid-template-columns: 1fr;
+    }
+    .offer:nth-child(even) .offer__media {
+      order: 0;
+    }
+    .offer__media {
+      aspect-ratio: 16 / 11;
+    }
+  }
+</style>

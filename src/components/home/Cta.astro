@@ -1,0 +1,60 @@
+---
+import { SITE } from '../../data/site';
+import Icon from '../Icon.astro';
+
+interface Props {
+  cta: { eyebrow: string; title: string; titleAccent: string; text: string; button: string };
+}
+const { cta } = Astro.props;
+---
+
+<section class="cta section" id="cta" aria-labelledby="cta-title">
+  <div class="container cta__inner">
+    <p class="eyebrow fade-up">{cta.eyebrow}</p>
+    <h2 class="cta__title display" id="cta-title">
+      <span data-split>{cta.title}</span>
+      <span class="accent" data-split>{cta.titleAccent}</span>
+    </h2>
+    <p class="cta__text lead fade-up">{cta.text}</p>
+    <div class="cta__actions fade-up" style="--delay:.1s">
+      <a href="/contact/" class="btn" data-magnet>
+        {cta.button}
+        <Icon name="arrow" />
+      </a>
+      <a href={`mailto:${SITE.email}`} class="link-arrow">{SITE.email}</a>
+      <a href={SITE.phoneHref} class="link-arrow">{SITE.phoneDisplay}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.75rem;
+  }
+  .cta__title {
+    font-size: clamp(3rem, 1rem + 9vw, 10rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .cta__title .accent {
+    font-size: 0.95em;
+  }
+  .cta__text {
+    text-align: center;
+    max-width: 44ch;
+    color: var(--fg-muted);
+  }
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem 2rem;
+    margin-top: 1rem;
+  }
+</style>

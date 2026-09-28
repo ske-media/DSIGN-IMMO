@@ -1,0 +1,61 @@
+---
+import { getImage } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/home/Hero.astro';
+import Marquee from '../components/home/Marquee.astro';
+import Manifesto from '../components/home/Manifesto.astro';
+import About from '../components/home/About.astro';
+import Story from '../components/home/Story.astro';
+import Expertises from '../components/home/Expertises.astro';
+import Process from '../components/home/Process.astro';
+import Projects from '../components/home/Projects.astro';
+import Faq from '../components/home/Faq.astro';
+import Cta from '../components/home/Cta.astro';
+import { HOME_FR as t, PROCESS, FAQ, EXPERTISES, IMAGES, SITE } from '../data/site';
+import { img } from '../lib/images';
+
+// Préchargement de l'image LCP (même pipeline que <Picture> du hero)
+const lcp = await getImage({ src: img(IMAGES.hero), widths: [640, 960, 1280, 1920, 2560], sizes: '100vw', format: 'avif' });
+
+const schema = [
+  {
+    '@type': 'FAQPage',
+    mainEntity: FAQ.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+  {
+    '@type': 'ItemList',
+    name: 'Expertises DSIGN IMMO',
+    itemListElement: EXPERTISES.map((e, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: e.seoTitle.split(' — ')[0],
+      url: `${SITE.url}/${e.slug}/`,
+    })),
+  },
+];
+---
+
+<Layout
+  title={t.seoTitle}
+  description={t.seoDescription}
+  path="/"
+  altPath="/en/"
+  locale="fr"
+  schema={schema}
+  preloadImage={{ href: lcp.src, imagesrcset: lcp.srcSet.attribute, imagesizes: '100vw' }}
+>
+  <Hero hero={t.hero} locale="fr" />
+  <Marquee items={t.marquee} />
+  <Manifesto text={t.manifesto} eyebrow="Manifeste" />
+  <About about={t.about} locale="fr" />
+  <Story story={t.story} locale="fr" />
+  <Expertises head={t.expertises} locale="fr" />
+  <Process head={t.process} steps={PROCESS} />
+  <Projects head={t.projects} locale="fr" />
+  <Faq head={t.faq} />
+  <Cta cta={t.cta} />
+</Layout>

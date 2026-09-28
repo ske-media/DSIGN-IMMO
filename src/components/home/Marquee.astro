@@ -1,0 +1,14 @@
+---
+interface Props {
+  items: readonly string[];
+  class?: string;
+}
+const { items, class: cls } = Astro.props;
+---
+
+<div class:list={['marquee', cls]} aria-hidden="true">
+  <div class="marquee__track">
+    {items.map((t) => <span>{t}</span>)}
+    {items.map((t) => <span>{t}</span>)}
+  </div>
+</div>

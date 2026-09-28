@@ -1,0 +1,33 @@
+---
+interface Props {
+  text: string;
+  eyebrow: string;
+}
+const { text, eyebrow } = Astro.props;
+---
+
+<section class="manifesto section" id="manifeste" data-manifesto aria-label={eyebrow}>
+  <div class="container">
+    <p class="eyebrow fade-up">{eyebrow}</p>
+    <p class="manifesto__text" data-manifesto-text>{text}</p>
+  </div>
+</section>
+
+<style>
+  .manifesto {
+    padding-block: clamp(6rem, 18vh, 12rem);
+  }
+  .manifesto__text {
+    margin-top: 2rem;
+    font-size: clamp(1.6rem, 1rem + 2.8vw, 3.6rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.18;
+    max-width: 24ch;
+    text-wrap: pretty;
+  }
+  .manifesto__text :global(.mw) {
+    display: inline-block;
+    will-change: color;
+  }
+</style>

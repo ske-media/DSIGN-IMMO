@@ -1,0 +1,264 @@
+---
+import { SITE, type Locale } from '../data/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  locale?: Locale;
+  altPath?: string;
+}
+const { locale = 'fr', altPath } = Astro.props;
+
+const nav =
+  locale === 'fr'
+    ? [
+        { href: '/', label: 'Accueil' },
+        { href: '/elodie-notariani/', label: 'Elodie' },
+        { href: '/architecte-interieur/', label: 'Expertises' },
+        { href: '/#realisations', label: 'Réalisations' },
+        { href: '/contact/', label: 'Contact' },
+      ]
+    : [
+        { href: '/en/', label: 'Home' },
+        { href: '/elodie-notariani/', label: 'Elodie' },
+        { href: '/architecte-interieur/', label: 'Services' },
+        { href: '/en/#realisations', label: 'Work' },
+        { href: '/contact/', label: 'Contact' },
+      ];
+
+const ctaLabel = locale === 'fr' ? 'Votre projet' : 'Your project';
+const current = Astro.url.pathname;
+---
+
+<header class="site-header" data-header>
+  <div class="site-header__inner">
+    <a href={locale === 'fr' ? '/' : '/en/'} class="brand">
+      <span class="brand__mark" aria-hidden="true">
+        <i></i><i></i><i></i><i></i>
+      </span>
+      <span class="brand__name">DSIGN <b>IMMO</b></span>
+    </a>
+
+    <nav class="nav" aria-label={locale === 'fr' ? 'Navigation principale' : 'Main navigation'}>
+      <ul class="nav__list">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="nav__link"
+                aria-current={current === item.href ? 'page' : undefined}
+                data-magnet
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-header__right">
+      {
+        altPath && (
+          <a href={altPath} class="lang" hreflang={locale === 'fr' ? 'en' : 'fr'} lang={locale === 'fr' ? 'en' : 'fr'}>
+            {locale === 'fr' ? 'EN' : 'FR'}
+          </a>
+        )
+      }
+      <a href="/contact/" class="btn btn--light header-cta" data-magnet>
+        {ctaLabel}
+        <Icon name="arrow" />
+      </a>
+      <button class="burger" type="button" aria-expanded="false" aria-controls="mobile-menu" data-burger>
+        <span class="sr-only">{locale === 'fr' ? 'Ouvrir le menu' : 'Open menu'}</span>
+        <i></i><i></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
+    <ul>
+      {
+        nav.map((item, i) => (
+          <li style={`--i:${i}`}>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))
+      }
+      <li style={`--i:${nav.length}`}>
+        <a href="/contact/" class="mobile-menu__cta">
+          {ctaLabel}
+          <Icon name="arrow" />
+        </a>
+      </li>
+    </ul>
+    <p class="mobile-menu__meta">
+      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a>
+    </p>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 100;
+    color: var(--linen);
+    mix-blend-mode: difference;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .site-header.is-hidden {
+    transform: translateY(-110%);
+  }
+  .site-header__inner {
+    width: min(100% - 2 * var(--gutter), var(--maxw));
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.1rem;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .brand__mark {
+    display: grid;
+    grid-template-columns: repeat(2, 7px);
+    gap: 2px;
+  }
+  .brand__mark i {
+    width: 7px;
+    height: 7px;
+    background: currentColor;
+    border-radius: 1px;
+    transition: transform 0.6s var(--ease-expo);
+  }
+  .brand:hover .brand__mark i:nth-child(1) { transform: translate(1px, 1px); }
+  .brand:hover .brand__mark i:nth-child(2) { transform: translate(-1px, 1px); }
+  .brand:hover .brand__mark i:nth-child(3) { transform: translate(1px, -1px); }
+  .brand:hover .brand__mark i:nth-child(4) { transform: translate(-1px, -1px); }
+  .brand__name {
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    font-size: 0.95rem;
+    font-stretch: 110%;
+  }
+  .brand__name b {
+    font-weight: 300;
+  }
+  .nav__list {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.3rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+  }
+  .nav__link {
+    display: block;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background 0.4s var(--ease-out), color 0.4s var(--ease-out);
+  }
+  .nav__link:hover,
+  .nav__link[aria-current='page'] {
+    background: var(--linen);
+    color: var(--ink);
+  }
+  .site-header__right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .lang {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    padding: 0.5rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+  }
+  .header-cta {
+    padding: 0.75rem 1.2rem;
+  }
+  .burger {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    position: relative;
+  }
+  .burger i {
+    position: absolute;
+    left: 13px;
+    right: 13px;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 0.5s var(--ease-expo), top 0.5s var(--ease-expo);
+  }
+  .burger i:first-child { top: 18px; }
+  .burger i:last-child { top: 25px; }
+  .burger[aria-expanded='true'] i:first-child { top: 21px; transform: rotate(45deg); }
+  .burger[aria-expanded='true'] i:last-child { top: 21px; transform: rotate(-45deg); }
+
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: var(--ink);
+    color: var(--linen);
+    padding: 6rem var(--gutter) 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    mix-blend-mode: normal;
+  }
+  .mobile-menu[hidden] { display: none; }
+  .mobile-menu li {
+    overflow: hidden;
+  }
+  .mobile-menu li a {
+    display: block;
+    font-size: clamp(2.4rem, 9vw, 4rem);
+    font-weight: 600;
+    font-stretch: 110%;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-transform: uppercase;
+    transform: translateY(110%);
+    animation: menu-in 0.9s var(--ease-expo) forwards;
+    animation-delay: calc(var(--i) * 60ms + 80ms);
+  }
+  .mobile-menu__cta {
+    color: var(--terra);
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.5em;
+  }
+  .mobile-menu__cta svg { width: 0.7em; height: 0.7em; }
+  .mobile-menu__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: var(--step--1);
+    opacity: 0.7;
+  }
+  @keyframes menu-in {
+    to { transform: none; }
+  }
+
+  @media (max-width: 900px) {
+    .nav, .header-cta { display: none; }
+    .burger { display: block; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu li a { transform: none; animation: none; }
+  }
+</style>

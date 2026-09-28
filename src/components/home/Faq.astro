@@ -1,0 +1,101 @@
+---
+import { FAQ } from '../../data/site';
+import Icon from '../Icon.astro';
+
+interface Props {
+  head: { eyebrow: string; title: string; titleAccent: string };
+}
+const { head } = Astro.props;
+---
+
+<section class="faq section section--sand" id="faq" aria-labelledby="faq-title">
+  <div class="container faq__grid">
+    <header class="faq__head">
+      <p class="eyebrow fade-up">{head.eyebrow}</p>
+      <h2 class="h2" id="faq-title">
+        <span data-split>{head.title}</span>
+        <span class="accent" data-split>{head.titleAccent}</span>
+      </h2>
+    </header>
+    <div class="faq__list">
+      {
+        FAQ.map((f, i) => (
+          <details class="faq__item fade-up" style={`--delay:${i * 0.06}s`} name="faq">
+            <summary>
+              <h3 class="faq__q">{f.q}</h3>
+              <Icon name="plus" class="faq__icon" />
+            </summary>
+            <p class="faq__a">{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 6vw, 8rem);
+    align-items: start;
+  }
+  .faq__head {
+    position: sticky;
+    top: 8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .faq__head .h2 {
+    display: flex;
+    flex-direction: column;
+  }
+  .faq__item {
+    border-top: 1px solid var(--line);
+  }
+  .faq__item:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  summary {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    padding-block: 1.5rem;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq__q {
+    font-size: var(--step-1);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+  .faq__icon {
+    flex: 0 0 1.2rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    transition: transform 0.5s var(--ease-expo);
+  }
+  details[open] .faq__icon {
+    transform: rotate(45deg);
+  }
+  .faq__a {
+    padding-bottom: 1.75rem;
+    color: var(--fg-muted);
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+  @media (max-width: 900px) {
+    .faq__grid {
+      grid-template-columns: 1fr;
+    }
+    .faq__head {
+      position: static;
+    }
+  }
+</style>

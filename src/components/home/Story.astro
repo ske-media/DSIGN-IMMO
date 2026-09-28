@@ -1,0 +1,203 @@
+---
+import { Picture } from 'astro:assets';
+import { img } from '../../lib/images';
+import { IMAGES, type Locale } from '../../data/site';
+import Icon from '../Icon.astro';
+
+interface Props {
+  locale: Locale;
+  story: {
+    eyebrow: string;
+    title: string;
+    titleAccent: string;
+    chapters: { n: string; title: string; text: string }[];
+    cta: string;
+  };
+}
+const { story, locale } = Astro.props;
+const fr = locale === 'fr';
+const chapterImages = [IMAGES.portrait, IMAGES.projects[0], IMAGES.projects[2]];
+const alts = fr
+  ? [
+      "Portrait d'Elodie Notariani, artiste et architecte d'intérieur, fondatrice de DSIGN IMMO",
+      'Dessin et plans : la main d’Elodie Notariani donne forme au projet',
+      "Détail d'un intérieur signé DSIGN IMMO : matières franches et lumière travaillée",
+    ]
+  : [
+      'Portrait of Elodie Notariani, artist and interior architect, founder of DSIGN IMMO',
+      'Drawings and plans: Elodie Notariani’s hand gives the project its form',
+      'Detail of a DSIGN IMMO interior: honest materials and crafted light',
+    ];
+---
+
+<section class="story section--dark" id="elodie" data-story aria-labelledby="story-title">
+  <div class="story__track" data-story-track>
+    <header class="story__head">
+      <p class="eyebrow fade-up">{story.eyebrow}</p>
+      <h2 class="story__title" id="story-title">
+        <span class="display" data-split>{story.title}</span>
+        <span class="accent" data-split>{story.titleAccent}</span>
+      </h2>
+      <p class="story__hint muted fade-up">{fr ? 'Faites défiler pour lire les trois chapitres' : 'Scroll to read the three chapters'} →</p>
+    </header>
+
+    {
+      story.chapters.map((c, i) => (
+        <article class="chapter" style={`--i:${i}`}>
+          <figure class="chapter__figure reveal-img">
+            <div data-story-img>
+              <Picture
+                src={img(chapterImages[i])}
+                widths={[480, 800, 1100]}
+                sizes="(max-width: 900px) 100vw, 38vw"
+                formats={['avif', 'webp']}
+                alt={alts[i]}
+                loading="lazy"
+              />
+            </div>
+          </figure>
+          <div class="chapter__body">
+            <p class="chapter__n serif">{c.n}</p>
+            <h3 class="chapter__title h3" data-split>{c.title}</h3>
+            <p class="chapter__text fade-up">{c.text}</p>
+          </div>
+        </article>
+      ))
+    }
+
+    <div class="story__end">
+      <p class="story__end-big display">Elodie<br /><span class="accent">Notariani</span></p>
+      <a href="/elodie-notariani/" class="btn btn--light" data-magnet>
+        {story.cta}
+        <Icon name="arrow" />
+      </a>
+    </div>
+  </div>
+  <div class="story__progress" aria-hidden="true"><span data-story-progress></span></div>
+</section>
+
+<style>
+  .story {
+    position: relative;
+    overflow: hidden;
+  }
+  .story__track {
+    display: flex;
+    align-items: stretch;
+    gap: clamp(3rem, 8vw, 10rem);
+    padding: clamp(6rem, 14vh, 9rem) var(--gutter) clamp(4rem, 10vh, 7rem);
+    min-height: 100vh;
+    min-height: 100svh;
+    width: max-content;
+    will-change: transform;
+  }
+  .story__head {
+    width: min(38rem, 80vw);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-shrink: 0;
+  }
+  .story__title {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(3.5rem, 9vw, 9rem);
+    line-height: 0.9;
+  }
+  .story__title .accent {
+    font-size: 0.95em;
+    margin-left: 0.5em;
+  }
+  .story__hint {
+    font-size: var(--step--1);
+  }
+  .chapter {
+    display: grid;
+    grid-template-columns: minmax(18rem, 34vw) minmax(18rem, 26rem);
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .chapter__figure {
+    aspect-ratio: 4 / 5;
+    height: min(70vh, 44rem);
+    overflow: hidden;
+  }
+  .chapter__figure > div {
+    width: 120%;
+    height: 100%;
+    margin-left: -10%;
+  }
+  .chapter__figure :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .chapter__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding-bottom: 2rem;
+  }
+  .chapter__n {
+    font-size: var(--step-3);
+    color: var(--terra);
+    line-height: 1;
+  }
+  .chapter__text {
+    color: var(--fg-muted);
+    max-width: 38ch;
+    text-wrap: pretty;
+  }
+  .story__end {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+    width: min(40rem, 80vw);
+    padding-right: var(--gutter);
+    flex-shrink: 0;
+  }
+  .story__end-big {
+    font-size: clamp(3rem, 8vw, 8rem);
+  }
+  .story__progress {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: 2rem;
+    height: 1px;
+    background: var(--line);
+  }
+  .story__progress span {
+    display: block;
+    height: 100%;
+    background: var(--terra);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  @media (max-width: 899px) {
+    .story__track {
+      flex-direction: column;
+      width: auto;
+      gap: 4rem;
+      padding-block: 5rem;
+    }
+    .story__head,
+    .story__end {
+      width: auto;
+    }
+    .chapter {
+      grid-template-columns: 1fr;
+    }
+    .chapter__figure {
+      height: auto;
+      aspect-ratio: 4 / 3;
+    }
+    .story__progress {
+      display: none;
+    }
+  }
+</style>

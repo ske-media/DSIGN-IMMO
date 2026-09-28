@@ -1,0 +1,177 @@
+---
+import { Picture } from 'astro:assets';
+import { img } from '../../lib/images';
+import { EXPERTISES, type Locale } from '../../data/site';
+import Icon from '../Icon.astro';
+
+interface Props {
+  locale: Locale;
+  head: { eyebrow: string; title: string; titleAccent: string };
+  /** Surcharge EN : eyebrow/title/titleAccent/short */
+  items?: { eyebrow: string; title: string; titleAccent: string; short: string }[];
+}
+const { head, items, locale } = Astro.props;
+const fr = locale === 'fr';
+const cards = EXPERTISES.map((e, i) => ({ ...e, ...(items?.[i] ?? {}) }));
+---
+
+<section class="expertises section" id="expertises" aria-labelledby="expertises-title">
+  <div class="container">
+    <header class="expertises__head">
+      <p class="eyebrow fade-up">{head.eyebrow}</p>
+      <h2 class="h2" id="expertises-title">
+        <span data-split>{head.title}</span>
+        <span class="accent" data-split>{head.titleAccent}</span>
+      </h2>
+    </header>
+
+    <ul class="cards">
+      {
+        cards.map((c, i) => (
+          <li class="card fade-up" style={`--delay:${i * 0.1}s`} data-tilt>
+            <a href={`/${c.slug}/`} class="card__link" aria-label={`${c.title} ${c.titleAccent} — ${c.eyebrow}`}>
+              <figure class="card__media">
+                <Picture
+                  src={img(c.image)}
+                  widths={[400, 700, 1000]}
+                  sizes="(max-width: 700px) 100vw, 33vw"
+                  formats={['avif', 'webp']}
+                  alt={fr ? `${c.eyebrow.replace(/^\d+ — /, '')} : espace conçu par DSIGN IMMO` : `${c.eyebrow.replace(/^\d+ — /, '')}: space designed by DSIGN IMMO`}
+                  loading="lazy"
+                />
+              </figure>
+              <div class="card__body">
+                <p class="card__eyebrow">{c.eyebrow}</p>
+                <h3 class="card__title display">
+                  {c.title} <span class="accent">{c.titleAccent}</span>
+                </h3>
+                <p class="card__text">{c.short}</p>
+                <span class="card__more link-arrow">
+                  {fr ? 'Découvrir' : 'Discover'}
+                  <Icon name="arrow" />
+                </span>
+              </div>
+              <span class="card__shine" aria-hidden="true" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .expertises__head {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+  .expertises__head .h2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.3em;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gutter);
+    perspective: 1400px;
+  }
+  .card {
+    will-change: transform;
+    transform-style: preserve-3d;
+  }
+  .card__link {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--ink);
+    color: var(--linen);
+    border-radius: 8px;
+    overflow: hidden;
+    isolation: isolate;
+    transform: translateZ(0);
+  }
+  .card__media {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+  .card__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.02);
+    transition: transform 1.2s var(--ease-out), filter 1.2s var(--ease-out);
+  }
+  .card__link:hover .card__media :global(img) {
+    transform: scale(1.08);
+  }
+  .card__body {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: clamp(1.25rem, 2.5vw, 2rem);
+    background: linear-gradient(180deg, transparent, rgba(15, 14, 12, 0.6) 30%, rgba(15, 14, 12, 0.92));
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    transform: translateZ(40px);
+  }
+  .card__eyebrow {
+    font-size: var(--step--1);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245, 241, 234, 0.65);
+  }
+  .card__title {
+    font-size: var(--step-3);
+    font-weight: 600;
+  }
+  .card__title .accent {
+    font-size: 0.9em;
+    color: var(--sand);
+  }
+  .card__text {
+    font-size: var(--step--1);
+    line-height: 1.45;
+    color: rgba(245, 241, 234, 0.82);
+    max-width: 34ch;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.7s var(--ease-expo), opacity 0.6s var(--ease-out), margin 0.7s var(--ease-expo);
+  }
+  .card__link:hover .card__text,
+  .card__link:focus-visible .card__text {
+    max-height: 8rem;
+    opacity: 1;
+    margin-block: 0.25rem;
+  }
+  .card__more {
+    color: var(--terra);
+  }
+  .card__shine {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(500px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.14), transparent 45%);
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  .card__link:hover .card__shine {
+    opacity: 1;
+  }
+  @media (max-width: 900px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+    .card__media {
+      aspect-ratio: 16 / 11;
+    }
+    .card__text {
+      max-height: none;
+      opacity: 1;
+    }
+  }
+</style>

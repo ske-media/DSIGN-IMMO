@@ -1,0 +1,254 @@
+---
+import { Picture } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Cta from '../components/home/Cta.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, IMAGES, HOME_FR } from '../data/site';
+import { img } from '../lib/images';
+
+const title = "Elodie Notariani — Artiste & architecte d'intérieur, fondatrice de DSIGN IMMO";
+const description =
+  "Découvrez Elodie Notariani, artiste et architecte d'intérieur, fondatrice de DSIGN IMMO. Son regard, sa méthode et sa signature : des espaces sensibles, fonctionnels et à votre image, pour particuliers et professionnels.";
+
+const chapters = [
+  {
+    n: 'I',
+    title: 'Le regard',
+    text: [
+      "Tout commence par une manière de voir. Elodie Notariani entre dans un lieu comme on entre dans un tableau : elle observe d'abord ce qui n'est pas là. Le vide entre deux murs, la lumière qui glisse sur un sol à la fin de l'après-midi, le silence d'un angle que personne n'utilise.",
+      "C'est une sensibilité d'artiste, pas un catalogue de tendances. Elle lui permet de comprendre ce qu'un espace peut devenir avant même de tracer un trait, et de proposer des partis pris que vous n'auriez pas imaginés, mais qui vous ressemblent immédiatement.",
+    ],
+  },
+  {
+    n: 'II',
+    title: 'La main',
+    text: [
+      "Le regard ne suffit pas. Il faut le traduire. Plans, coupes, perspectives, planches de matières : Elodie donne à l'intuition une forme précise et mesurée, pour que le chantier puisse la réaliser sans la trahir.",
+      "Chaque centimètre a une raison. Chaque matière est choisie pour sa lumière, sa texture, et la façon dont elle vieillira. Le bois, la pierre, l'enduit, le textile : des matériaux francs, qui prennent la patine du temps plutôt que de le subir.",
+    ],
+  },
+  {
+    n: 'III',
+    title: 'La signature',
+    text: [
+      "On reconnaît un projet DSIGN IMMO à sa retenue. Des lignes calmes, des proportions justes, une lumière travaillée comme un matériau à part entière. Rien de superflu : chaque élément est là parce qu'il sert un usage ou une émotion.",
+      "Et puis il y a ce détail, celui que l'on ne remarque pas tout de suite : une niche à la bonne hauteur, une teinte qui répond à la vue, une poignée qui tombe sous la main. C'est lui qui rend un lieu inoubliable, et qui fait que l'on s'y sent chez soi dès le premier jour.",
+    ],
+  },
+];
+
+const values = [
+  { k: 'Écoute', v: "Un projet commence par vos usages, vos habitudes et votre budget, jamais par une mode." },
+  { k: 'Justesse', v: 'Des proportions, une lumière et des matières choisies pour durer, pas pour impressionner.' },
+  { k: 'Exigence', v: "Le même niveau d'attention pour un studio locatif, une maison familiale ou un restaurant." },
+  { k: 'Proximité', v: "Une interlocutrice unique, disponible, de l'esquisse à la remise des clés." },
+];
+
+const schema = [
+  {
+    '@type': 'ProfilePage',
+    mainEntity: { '@id': `${SITE.url}/#elodie-notariani` },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${SITE.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Elodie Notariani', item: `${SITE.url}/elodie-notariani/` },
+    ],
+  },
+];
+---
+
+<Layout {title} {description} path="/elodie-notariani/" locale="fr" type="profile" schema={schema}>
+  <PageHero
+    eyebrow="Fondatrice de DSIGN IMMO"
+    title="Elodie"
+    titleAccent="Notariani"
+    text="Artiste et architecte d'intérieur. Elle conçoit des espaces que l'on ressent avant de les comprendre : justes, lumineux, habités."
+    crumbs={[
+      { href: '/', label: 'Accueil' },
+      { href: '/elodie-notariani/', label: 'Elodie Notariani' },
+    ]}
+  />
+
+  <section class="portrait section--dark">
+    <div class="container portrait__grid">
+      <figure class="portrait__figure reveal-img" data-parallax="0.08">
+        <Picture
+          src={img(IMAGES.portrait)}
+          widths={[600, 900, 1400]}
+          sizes="(max-width: 900px) 100vw, 45vw"
+          formats={['avif', 'webp']}
+          alt="Elodie Notariani, artiste et architecte d'intérieur, fondatrice de DSIGN IMMO"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </figure>
+      <div class="portrait__body">
+        <p class="portrait__quote serif fade-up">“{HOME_FR.about.quote}”</p>
+        <p class="fade-up measure" style="--delay:.1s">
+          Derrière DSIGN IMMO, il y a une personne. Elodie Notariani a fondé l'agence avec une conviction simple : un
+          intérieur réussi n'est pas celui que l'on photographie, c'est celui que l'on vit. Elle accompagne
+          particuliers, loueurs professionnels, commerces et restaurants avec la même attention, du premier échange à
+          la dernière finition.
+        </p>
+        <dl class="portrait__facts fade-up" style="--delay:.2s">
+          <div><dt>Rôle</dt><dd>Fondatrice, artiste & architecte d'intérieur</dd></div>
+          <div><dt>Studio</dt><dd>{SITE.name}</dd></div>
+          <div><dt>Univers</dt><dd>Habitat, locatif, commerces & restaurants</dd></div>
+          <div><dt>Contact</dt><dd><a href={`mailto:${SITE.email}`}>{SITE.email}</a></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapters section" aria-label="Le parcours créatif d'Elodie Notariani">
+    <div class="container">
+      {
+        chapters.map((c, i) => (
+          <article class="chapterp" id={`chapitre-${i + 1}`}>
+            <div class="chapterp__side">
+              <span class="chapterp__n serif">{c.n}</span>
+              <h2 class="h2" data-split>
+                {c.title}
+              </h2>
+            </div>
+            <div class="chapterp__text">
+              {c.text.map((p, j) => (
+                <p class="fade-up measure" style={`--delay:${j * 0.1}s`}>
+                  {p}
+                </p>
+              ))}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="values section section--sand" aria-labelledby="values-title">
+    <div class="container">
+      <p class="eyebrow fade-up">Ce qui guide chaque projet</p>
+      <h2 class="h2 values__title" id="values-title"><span data-split>Quatre principes,</span> <span class="accent" data-split>zéro compromis.</span></h2>
+      <ul class="values__list">
+        {
+          values.map((v, i) => (
+            <li class="values__item fade-up" style={`--delay:${i * 0.08}s`}>
+              <h3 class="h4">{v.k}</h3>
+              <p class="muted">{v.v}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="values__cta fade-up">
+        <a href="/architecte-interieur/" class="link-arrow">Voir les expertises <Icon name="arrow" /></a>
+      </p>
+    </div>
+  </section>
+
+  <Cta cta={{ ...HOME_FR.cta, title: 'Rencontrer', titleAccent: 'Elodie.' }} />
+</Layout>
+
+<style>
+  .portrait {
+    padding-block: clamp(3rem, 8vh, 6rem) var(--section);
+  }
+  .portrait__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    align-items: center;
+  }
+  .portrait__figure {
+    aspect-ratio: 4 / 5;
+    border-radius: 6px;
+  }
+  .portrait__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .portrait__quote {
+    font-size: var(--step-3);
+    line-height: 1.1;
+    color: var(--sand);
+  }
+  .portrait__facts {
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+    font-size: var(--step--1);
+    border-top: 1px solid var(--line);
+    padding-top: 1.5rem;
+  }
+  .portrait__facts div {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 1rem;
+  }
+  .portrait__facts dt {
+    color: var(--fg-muted);
+  }
+  .portrait__facts dd {
+    margin: 0;
+  }
+  .portrait__facts a:hover {
+    color: var(--terra);
+  }
+  .chapterp {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 6vw, 8rem);
+    padding-block: clamp(3rem, 7vw, 6rem);
+    border-top: 1px solid var(--line);
+  }
+  .chapterp__side {
+    position: sticky;
+    top: 8rem;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .chapterp__n {
+    font-size: var(--step-3);
+    color: var(--terra);
+    line-height: 1;
+  }
+  .chapterp__text {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    font-size: var(--step-1);
+    line-height: 1.45;
+  }
+  .values__title {
+    margin-block: 1.5rem clamp(2.5rem, 5vw, 4rem);
+  }
+  .values__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+  .values__item {
+    padding: 2rem 1.5rem 2rem 0;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .values__cta {
+    margin-top: 2.5rem;
+  }
+  @media (max-width: 900px) {
+    .portrait__grid,
+    .chapterp {
+      grid-template-columns: 1fr;
+    }
+    .chapterp__side {
+      position: static;
+    }
+  }
+</style>

@@ -1,0 +1,130 @@
+---
+import { Picture } from 'astro:assets';
+import { img } from '../../lib/images';
+import { PROJECTS, type Locale } from '../../data/site';
+import Icon from '../Icon.astro';
+
+interface Props {
+  locale: Locale;
+  head: { eyebrow: string; title: string; titleAccent: string; text: string };
+}
+const { head, locale } = Astro.props;
+const fr = locale === 'fr';
+---
+
+<section class="projects section" id="realisations" aria-labelledby="projects-title">
+  <div class="container">
+    <header class="projects__head">
+      <div>
+        <p class="eyebrow fade-up">{head.eyebrow}</p>
+        <h2 class="h2" id="projects-title">
+          <span data-split>{head.title}</span>
+          <span class="accent" data-split>{head.titleAccent}</span>
+        </h2>
+      </div>
+      <p class="projects__text measure fade-up">{head.text}</p>
+    </header>
+
+    <ul class="gallery">
+      {
+        PROJECTS.map((p, i) => (
+          <li class="gallery__item" data-gallery-item style={`--i:${i}`}>
+            <figure>
+              <div class="gallery__media">
+                <Picture
+                  src={img(p.image)}
+                  widths={[480, 800, 1200]}
+                  sizes="(max-width: 700px) 100vw, 50vw"
+                  formats={['avif', 'webp']}
+                  alt={fr ? `${p.title} — ${p.type}, ${p.place} : réalisation DSIGN IMMO par Elodie Notariani` : `${p.title} — ${p.type}, ${p.place}: DSIGN IMMO project by Elodie Notariani`}
+                  loading="lazy"
+                />
+              </div>
+              <figcaption class="gallery__caption">
+                <span class="gallery__title">{p.title}</span>
+                <span class="gallery__meta muted">{p.type} · {p.place}</span>
+              </figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="projects__cta fade-up">
+      <a href="/contact/" class="btn" data-magnet>
+        {fr ? 'Votre projet, le prochain ?' : 'Your project next?'}
+        <Icon name="arrow" />
+      </a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .projects__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+  .projects__head .h2 {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1.5rem;
+  }
+  .projects__text {
+    max-width: 38ch;
+    color: var(--fg-muted);
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 4vw, 4rem) var(--gutter);
+    perspective: 1400px;
+  }
+  .gallery__item {
+    will-change: transform;
+    transform-style: preserve-3d;
+  }
+  .gallery__item:nth-child(even) {
+    margin-top: clamp(2rem, 8vw, 8rem);
+  }
+  .gallery__item:nth-child(3n) .gallery__media {
+    aspect-ratio: 3 / 4;
+  }
+  .gallery__media {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--sand-2);
+    border-radius: 6px;
+  }
+  .gallery__media :global(img) {
+    width: 100%;
+    height: 116%;
+    object-fit: cover;
+    will-change: transform;
+  }
+  .gallery__caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.9rem;
+    font-size: var(--step--1);
+  }
+  .gallery__title {
+    font-weight: 500;
+  }
+  .projects__cta {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    text-align: center;
+  }
+  @media (max-width: 700px) {
+    .gallery {
+      grid-template-columns: 1fr;
+    }
+    .gallery__item:nth-child(even) {
+      margin-top: 0;
+    }
+  }
+</style>

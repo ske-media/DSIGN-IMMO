@@ -1,0 +1,15 @@
+{
+  "name": "DSIGN IMMO — Architecture d'intérieur",
+  "short_name": "DSIGN IMMO",
+  "description": "Agence d'architecture d'intérieur fondée par Elodie Notariani.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f1ea",
+  "theme_color": "#0f0e0c",
+  "lang": "fr",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

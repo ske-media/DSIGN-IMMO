@@ -1,0 +1,144 @@
+---
+import { SITE, EXPERTISES, type Locale } from '../data/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  locale?: Locale;
+}
+const { locale = 'fr' } = Astro.props;
+const year = new Date().getFullYear();
+const fr = locale === 'fr';
+const socials = [
+  { key: 'instagram', href: SITE.social.instagram, label: 'Instagram' },
+  { key: 'linkedin', href: SITE.social.linkedin, label: 'LinkedIn' },
+  { key: 'pinterest', href: SITE.social.pinterest, label: 'Pinterest' },
+].filter((s) => s.href);
+---
+
+<footer class="footer section--dark" id="footer">
+  <div class="container">
+    <div class="footer__top">
+      <p class="footer__big display" aria-hidden="true">
+        DSIGN<span class="accent">immo</span>
+      </p>
+      <div class="footer__cols">
+        <div>
+          <p class="eyebrow">{fr ? 'Contact' : 'Contact'}</p>
+          <a class="footer__contact" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          <a class="footer__contact" href={SITE.phoneHref}>{SITE.phoneDisplay}</a>
+          {SITE.city && <p class="muted">{SITE.city}, {SITE.region}</p>}
+        </div>
+        <div>
+          <p class="eyebrow">{fr ? 'Expertises' : 'Services'}</p>
+          <ul class="footer__list">
+            {EXPERTISES.map((e) => (
+              <li><a href={`/${e.slug}/`}>{e.eyebrow.replace(/^\d+ — /, '')}</a></li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow">{fr ? 'Studio' : 'Studio'}</p>
+          <ul class="footer__list">
+            <li><a href="/elodie-notariani/">Elodie Notariani</a></li>
+            <li><a href="/architecte-interieur/">{fr ? 'Architecte d’intérieur' : 'Interior architect'}</a></li>
+            <li><a href="/contact/">{fr ? 'Demander un devis' : 'Request a quote'}</a></li>
+            <li><a href={fr ? '/en/' : '/'} hreflang={fr ? 'en' : 'fr'}>{fr ? 'English version' : 'Version française'}</a></li>
+          </ul>
+        </div>
+        {socials.length > 0 && (
+          <div>
+            <p class="eyebrow">{fr ? 'Suivre' : 'Follow'}</p>
+            <ul class="footer__social">
+              {socials.map((s) => (
+                <li>
+                  <a href={s.href} target="_blank" rel="noopener" aria-label={s.label}>
+                    <Icon name={s.key as 'instagram' | 'linkedin' | 'pinterest'} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© {year} {SITE.name} — {fr ? "Architecture d'intérieur par" : 'Interior architecture by'} {SITE.founder}</p>
+      <p>
+        <a href="/mentions-legales/">{fr ? 'Mentions légales' : 'Legal notice'}</a>
+        <span aria-hidden="true"> · </span>
+        <a href="#top">{fr ? 'Haut de page' : 'Back to top'} ↑</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: var(--section) 2rem;
+    overflow: hidden;
+  }
+  .footer__big {
+    font-size: clamp(4rem, 18vw, 19rem);
+    line-height: 0.8;
+    margin-bottom: clamp(3rem, 8vw, 6rem);
+    opacity: 0.95;
+    letter-spacing: -0.05em;
+  }
+  .footer__big .accent {
+    color: var(--terra);
+    font-size: 0.9em;
+    margin-left: 0.05em;
+  }
+  .footer__cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2.5rem var(--gutter);
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .footer__cols .eyebrow {
+    margin-bottom: 1.2rem;
+  }
+  .footer__contact {
+    display: block;
+    font-size: var(--step-1);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.35rem;
+  }
+  .footer__contact:hover { color: var(--terra); }
+  .footer__list li {
+    margin-bottom: 0.5rem;
+  }
+  .footer__list a {
+    color: var(--fg-muted);
+    transition: color 0.3s;
+  }
+  .footer__list a:hover { color: var(--fg); }
+  .footer__social {
+    display: flex;
+    gap: 0.75rem;
+  }
+  .footer__social a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    transition: background 0.4s, color 0.4s;
+  }
+  .footer__social a:hover { background: var(--linen); color: var(--ink); }
+  .footer__social svg { width: 18px; height: 18px; }
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--step--1);
+    color: var(--fg-muted);
+  }
+  .footer__bottom a:hover { color: var(--fg); }
+</style>

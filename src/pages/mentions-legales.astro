@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import { SITE } from '../data/site';
+---
+
+<Layout title="Mentions légales | DSIGN IMMO" description="Mentions légales et informations éditoriales du site dsignimmo.com." path="/mentions-legales/" locale="fr" noindex>
+  <PageHero
+    eyebrow="Informations"
+    title="Mentions"
+    titleAccent="légales"
+    crumbs={[
+      { href: '/', label: 'Accueil' },
+      { href: '/mentions-legales/', label: 'Mentions légales' },
+    ]}
+  />
+  <section class="section">
+    <div class="container legal">
+      <h2 class="h4">Éditeur du site</h2>
+      <p>
+        {SITE.legalName} — {SITE.founder}<br />
+        <!-- TODO : forme juridique, SIREN/SIRET, adresse du siège, capital -->
+        E-mail : <a href={`mailto:${SITE.email}`}>{SITE.email}</a> — Téléphone : <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a>
+      </p>
+      <h2 class="h4">Directrice de la publication</h2>
+      <p>{SITE.founder}</p>
+      <h2 class="h4">Hébergement</h2>
+      <p><!-- TODO : nom, adresse et téléphone de l'hébergeur -->À compléter.</p>
+      <h2 class="h4">Propriété intellectuelle</h2>
+      <p>
+        L'ensemble des contenus du site (textes, photographies, visuels, logo) est la propriété exclusive de {SITE.legalName} ou
+        de ses partenaires. Toute reproduction, même partielle, est interdite sans autorisation écrite préalable.
+      </p>
+      <h2 class="h4">Données personnelles</h2>
+      <p>
+        Les informations transmises via le formulaire de contact sont utilisées uniquement pour répondre à votre demande.
+        Elles ne sont ni vendues ni cédées. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de
+        suppression en écrivant à <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      </p>
+      <h2 class="h4">Cookies</h2>
+      <p>Ce site n'utilise aucun cookie de suivi ni outil de mesure d'audience tiers.</p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .legal {
+    max-width: 70ch;
+    display: grid;
+    gap: 1rem;
+  }
+  .legal h2 {
+    margin-top: 2rem;
+  }
+  .legal a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

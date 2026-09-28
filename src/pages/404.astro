@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Layout title="Page introuvable | DSIGN IMMO" description="Cette page n'existe pas ou a été déplacée." path="/404/" locale="fr" noindex>
+  <section class="nf section--dark">
+    <div class="container nf__inner">
+      <p class="eyebrow">Erreur 404</p>
+      <h1 class="display nf__title">Cette pièce<br /><span class="accent">n'existe pas.</span></h1>
+      <p class="lead muted">La page que vous cherchez a été déplacée ou n'a jamais existé. Revenons à l'entrée.</p>
+      <a href="/" class="btn btn--light" data-magnet>Retour à l'accueil <Icon name="arrow" /></a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .nf {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+  .nf__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+    padding-block: 8rem 4rem;
+  }
+  .nf__title {
+    font-size: clamp(3rem, 1rem + 9vw, 10rem);
+  }
+</style>

@@ -1,0 +1,163 @@
+---
+import { Picture } from 'astro:assets';
+import { img } from '../../lib/images';
+import { IMAGES, SITE, type Locale } from '../../data/site';
+import Icon from '../Icon.astro';
+
+interface Props {
+  locale: Locale;
+  about: {
+    eyebrow: string;
+    text: string;
+    stats: { value: string; suffix?: string; label: string }[];
+    quote: string;
+    link: string;
+  };
+}
+const { about, locale } = Astro.props;
+const fr = locale === 'fr';
+---
+
+<section class="about section section--sand" id="studio" aria-labelledby="about-title">
+  <div class="container about__grid">
+    <div class="about__intro">
+      <h2 class="about__title" id="about-title">
+        <span class="about__at">{about.eyebrow}</span>
+        <span class="display" data-split>{SITE.name}</span><span class="accent">,</span>
+      </h2>
+      <p class="about__text measure fade-up" style="--delay:.15s">{about.text}</p>
+      <figure class="about__figure reveal-img">
+        <Picture
+          src={img(IMAGES.atelier)}
+          widths={[480, 800, 1200]}
+          sizes="(max-width: 900px) 100vw, 45vw"
+          formats={['avif', 'webp']}
+          alt={fr ? "Matières, échantillons et objets choisis dans l'atelier d'Elodie Notariani" : 'Materials, samples and objects chosen in Elodie Notariani’s studio'}
+          loading="lazy"
+        />
+      </figure>
+    </div>
+
+    <div class="about__stats">
+      {
+        about.stats.map((s, i) => (
+          <div class="stat fade-up" style={`--delay:${i * 0.12}s`}>
+            <p class="stat__label">{s.label}</p>
+            <p class="stat__value">
+              <span data-count={s.value}>{s.value}</span>
+              {s.suffix && <span class="stat__suffix">{s.suffix}</span>}
+            </p>
+          </div>
+        ))
+      }
+      <div class="stat stat--quote fade-up" style="--delay:.36s">
+        <p class="stat__quote serif">“{about.quote}”</p>
+        <a href="/elodie-notariani/" class="link-arrow">
+          {about.link}
+          <Icon name="arrow" />
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: start;
+  }
+  .about__title {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    white-space: nowrap;
+    font-size: clamp(2.4rem, 0.8rem + 4.6vw, 6rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+  }
+  .about__at {
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+  .about__title .display {
+    font-weight: 500;
+    font-stretch: 100%;
+  }
+  .about__text {
+    margin-top: 2rem;
+    font-size: var(--step-1);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .about__figure {
+    margin-top: clamp(3rem, 8vh, 6rem);
+    aspect-ratio: 4 / 3;
+  }
+  .about__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-left: 1px solid var(--line);
+    border-top: 1px solid var(--line);
+    margin-top: 0.5rem;
+  }
+  .stat {
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    min-height: clamp(14rem, 22vw, 20rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  .stat__label {
+    font-size: var(--step--1);
+    line-height: 1.4;
+    max-width: 18ch;
+    color: var(--fg-muted);
+  }
+  .stat__value {
+    font-size: clamp(3.5rem, 6vw, 6.5rem);
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+    color: var(--earth);
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 0.1em;
+  }
+  .stat__suffix {
+    font-size: 0.45em;
+  }
+  .stat--quote {
+    background: var(--earth);
+    color: var(--linen);
+    justify-content: space-between;
+  }
+  .stat__quote {
+    font-size: var(--step-1);
+    line-height: 1.25;
+  }
+  .stat--quote .link-arrow {
+    color: var(--linen);
+  }
+
+  @media (max-width: 900px) {
+    .about__grid {
+      grid-template-columns: 1fr;
+    }
+    .about__figure {
+      margin-top: 2rem;
+    }
+    .stat {
+      min-height: 12rem;
+    }
+  }
+</style>

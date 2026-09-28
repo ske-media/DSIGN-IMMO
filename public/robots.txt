@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /_astro/*.json$
+
+Sitemap: https://www.dsignimmo.com/sitemap-index.xml

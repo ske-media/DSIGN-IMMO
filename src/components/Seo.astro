@@ -1,0 +1,140 @@
+---
+/**
+ * Balises SEO techniques : title, description, canonical, hreflang,
+ * Open Graph, Twitter, JSON-LD (Organization + WebSite + page schema).
+ */
+import { SITE, type Locale } from '../data/site';
+import { getImage } from 'astro:assets';
+import { img } from '../lib/images';
+
+interface Props {
+  title: string;
+  description: string;
+  locale?: Locale;
+  /** Chemin canonique (ex. "/contact/") */
+  path: string;
+  /** Chemin de la version alternative (fr <-> en) */
+  altPath?: string;
+  type?: 'website' | 'article' | 'profile';
+  /** JSON-LD additionnels */
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { title, description, locale = 'fr', path, altPath, type = 'website', schema = [], noindex = false } = Astro.props;
+
+const canonical = new URL(path, SITE.url).href;
+const og = await getImage({ src: img('og.jpg'), width: 1200, height: 630, format: 'jpg', quality: 82 });
+const ogUrl = new URL(og.src, SITE.url).href;
+
+const address =
+  SITE.streetAddress || SITE.city
+    ? {
+        '@type': 'PostalAddress',
+        ...(SITE.streetAddress && { streetAddress: SITE.streetAddress }),
+        ...(SITE.postalCode && { postalCode: SITE.postalCode }),
+        ...(SITE.city && { addressLocality: SITE.city }),
+        addressCountry: 'FR',
+      }
+    : { '@type': 'PostalAddress', addressCountry: 'FR' };
+
+const sameAs = Object.values(SITE.social).filter(Boolean);
+
+const organization = {
+  '@type': ['ProfessionalService', 'InteriorDesigner', 'Organization'],
+  '@id': `${SITE.url}/#organization`,
+  name: SITE.name,
+  legalName: SITE.legalName,
+  url: SITE.url + '/',
+  logo: `${SITE.url}/favicon.svg`,
+  image: ogUrl,
+  email: SITE.email,
+  telephone: SITE.phoneHref.replace('tel:', ''),
+  description:
+    "Agence d'architecture d'intérieur spécialisée dans la conception et la réalisation d'espaces intérieurs pour particuliers, loueurs professionnels, entreprises, commerces et restaurants.",
+  address,
+  areaServed: { '@type': 'Country', name: 'France' },
+  founder: { '@id': `${SITE.url}/#elodie-notariani` },
+  priceRange: '€€',
+  ...(sameAs.length && { sameAs }),
+  knowsAbout: [
+    "Architecture d'intérieur",
+    'Aménagement intérieur',
+    'Rénovation',
+    'Agencement commercial',
+    'Investissement locatif',
+    "Design d'espace",
+  ],
+};
+
+const person = {
+  '@type': 'Person',
+  '@id': `${SITE.url}/#elodie-notariani`,
+  name: SITE.founder,
+  givenName: SITE.founderFirst,
+  familyName: SITE.founderLast,
+  jobTitle: "Architecte d'intérieur & artiste",
+  worksFor: { '@id': `${SITE.url}/#organization` },
+  url: `${SITE.url}/elodie-notariani/`,
+  ...(sameAs.length && { sameAs }),
+};
+
+const website = {
+  '@type': 'WebSite',
+  '@id': `${SITE.url}/#website`,
+  url: SITE.url + '/',
+  name: SITE.name,
+  inLanguage: locale === 'fr' ? 'fr-FR' : 'en-GB',
+  publisher: { '@id': `${SITE.url}/#organization` },
+};
+
+const webpage = {
+  '@type': 'WebPage',
+  '@id': canonical + '#webpage',
+  url: canonical,
+  name: title,
+  description,
+  inLanguage: locale === 'fr' ? 'fr-FR' : 'en-GB',
+  isPartOf: { '@id': `${SITE.url}/#website` },
+  about: { '@id': `${SITE.url}/#organization` },
+  primaryImageOfPage: { '@type': 'ImageObject', url: ogUrl },
+};
+
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@graph': [organization, person, website, webpage, ...schema],
+};
+
+const ogLocale = locale === 'fr' ? 'fr_FR' : 'en_GB';
+const altLocale = locale === 'fr' ? 'en_GB' : 'fr_FR';
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex ? <meta name="robots" content="noindex, nofollow" /> : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />}
+{
+  altPath && (
+    <>
+      <link rel="alternate" hreflang={locale === 'fr' ? 'fr' : 'en'} href={canonical} />
+      <link rel="alternate" hreflang={locale === 'fr' ? 'en' : 'fr'} href={new URL(altPath, SITE.url).href} />
+      <link rel="alternate" hreflang="x-default" href={locale === 'fr' ? canonical : new URL(altPath, SITE.url).href} />
+    </>
+  )
+}
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content={ogLocale} />
+{altPath && <meta property="og:locale:alternate" content={altLocale} />}
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={`${SITE.name} — Architecture d'intérieur par ${SITE.founder}`} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogUrl} />
+<script type="application/ld+json" set:html={JSON.stringify(jsonld)} />

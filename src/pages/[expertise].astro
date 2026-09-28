@@ -1,0 +1,263 @@
+---
+import { Picture } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Process from '../components/home/Process.astro';
+import Cta from '../components/home/Cta.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, EXPERTISES, PROCESS, HOME_FR, PROJECTS } from '../data/site';
+import { img } from '../lib/images';
+
+export function getStaticPaths() {
+  return EXPERTISES.map((e) => ({ params: { expertise: e.slug }, props: { e } }));
+}
+const { e } = Astro.props;
+const others = EXPERTISES.filter((x) => x.slug !== e.slug);
+const audience = e.eyebrow.replace(/^\d+ — /, '');
+const related = PROJECTS.filter((p) => e.slug.includes('particuliers') ? p.type === 'Particulier' : e.slug.includes('locatif') ? p.type === 'Loueur professionnel' : ['Commerce', 'Restaurateur', 'Entreprise'].includes(p.type));
+
+const schema = [
+  {
+    '@type': 'Service',
+    name: e.seoTitle.split(' — ')[0],
+    serviceType: "Architecture d'intérieur",
+    description: e.seoDescription,
+    provider: { '@id': `${SITE.url}/#organization` },
+    audience: { '@type': 'Audience', audienceType: audience },
+    areaServed: { '@type': 'Country', name: 'France' },
+    url: `${SITE.url}/${e.slug}/`,
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${SITE.url}/` },
+      { '@type': 'ListItem', position: 2, name: "Architecte d'intérieur", item: `${SITE.url}/architecte-interieur/` },
+      { '@type': 'ListItem', position: 3, name: audience, item: `${SITE.url}/${e.slug}/` },
+    ],
+  },
+];
+---
+
+<Layout title={e.seoTitle} description={e.seoDescription} path={`/${e.slug}/`} locale="fr" schema={schema}>
+  <PageHero
+    eyebrow={e.eyebrow}
+    title={e.title}
+    titleAccent={e.titleAccent}
+    text={e.intro}
+    crumbs={[
+      { href: '/', label: 'Accueil' },
+      { href: '/architecte-interieur/', label: "Architecte d'intérieur" },
+      { href: `/${e.slug}/`, label: audience },
+    ]}
+  />
+
+  <section class="ex section--dark ex--media">
+    <div class="container">
+      <figure class="ex__hero reveal-img">
+        <div data-parallax="0.1">
+          <Picture
+            src={img(e.image)}
+            widths={[700, 1100, 1600, 2200]}
+            sizes="100vw"
+            formats={['avif', 'webp']}
+            alt={`${audience} : ${e.short}`}
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container ex__grid">
+      <aside class="ex__aside">
+        <p class="eyebrow fade-up">Ce que nous faisons</p>
+        <ul class="ex__bullets fade-up">
+          {e.bullets.map((b) => <li>{b}</li>)}
+        </ul>
+        <a href="/contact/" class="btn fade-up" data-magnet>
+          Parler de votre projet
+          <Icon name="arrow" />
+        </a>
+      </aside>
+      <div class="ex__chapters">
+        {
+          e.chapters.map((c, i) => (
+            <article class="ex__chapter">
+              <span class="ex__n serif">0{i + 1}</span>
+              <h2 class="h3" data-split>
+                {c.title}
+              </h2>
+              <p class="fade-up measure">{c.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    related.length > 0 && (
+      <section class="section section--sand">
+        <div class="container">
+          <p class="eyebrow fade-up">Réalisations {audience.toLowerCase()}</p>
+          <ul class="ex__related">
+            {related.map((p) => (
+              <li class="fade-up">
+                <figure class="reveal-img ex__related-media">
+                  <Picture
+                    src={img(p.image)}
+                    widths={[480, 800, 1200]}
+                    sizes="(max-width: 700px) 100vw, 50vw"
+                    formats={['avif', 'webp']}
+                    alt={`${p.title} — ${p.type}, ${p.place} : réalisation DSIGN IMMO`}
+                    loading="lazy"
+                  />
+                </figure>
+                <p class="ex__related-caption">
+                  <strong>{p.title}</strong> <span class="muted">· {p.place}</span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <Process head={HOME_FR.process} steps={PROCESS} />
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow fade-up">Autres expertises</p>
+      <ul class="ex__others">
+        {
+          others.map((o) => (
+            <li class="fade-up">
+              <a href={`/${o.slug}/`} class="ex__other">
+                <span class="muted">{o.eyebrow}</span>
+                <span class="h3">
+                  {o.title} <span class="accent">{o.titleAccent}</span>
+                </span>
+                <Icon name="arrow" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Cta cta={HOME_FR.cta} />
+</Layout>
+
+<style>
+  .ex--media {
+    padding-bottom: var(--section);
+  }
+  .ex__hero {
+    aspect-ratio: 16 / 8;
+    border-radius: 6px;
+  }
+  .ex__hero > div {
+    height: 120%;
+    margin-top: -10%;
+  }
+  .ex__hero :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ex__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: clamp(2rem, 6vw, 8rem);
+    align-items: start;
+  }
+  .ex__aside {
+    position: sticky;
+    top: 8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  .ex__bullets {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .ex__bullets li::before {
+    content: '—';
+    margin-right: 0.6rem;
+    color: var(--terra);
+  }
+  .ex__chapters {
+    display: flex;
+    flex-direction: column;
+  }
+  .ex__chapter {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-block: clamp(2rem, 5vw, 4rem);
+    border-top: 1px solid var(--line);
+    font-size: var(--step-1);
+    line-height: 1.45;
+  }
+  .ex__n {
+    color: var(--terra);
+    font-size: var(--step-2);
+  }
+  .ex__related {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--gutter);
+  }
+  .ex__related-media {
+    aspect-ratio: 4 / 3;
+    border-radius: 6px;
+  }
+  .ex__related-caption {
+    padding-top: 0.8rem;
+    font-size: var(--step--1);
+  }
+  .ex__others {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .ex__other {
+    display: grid;
+    grid-template-columns: 1fr 2fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding-block: 1.75rem;
+    border-bottom: 1px solid var(--line);
+    transition: padding-left 0.5s var(--ease-out);
+  }
+  .ex__other:hover {
+    padding-left: 1rem;
+  }
+  .ex__other svg {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+  @media (max-width: 900px) {
+    .ex__grid {
+      grid-template-columns: 1fr;
+    }
+    .ex__aside {
+      position: static;
+    }
+    .ex__hero {
+      aspect-ratio: 4 / 3;
+    }
+    .ex__other {
+      grid-template-columns: 1fr auto;
+    }
+    .ex__other .muted {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

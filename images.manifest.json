@@ -1,0 +1,17 @@
+{
+  "_readme": "Renseignez l'URL (ou le chemin local) de chaque image réelle, puis lancez `npm run images:fetch`. Les entrées 'TODO…' sont ignorées. Voir CONTENT.md pour la description attendue de chaque visuel.",
+  "hero.jpg": "TODO — visuel d'accueil plein écran (intérieur signature, paysage, ≥ 2400 px)",
+  "hero-depth.jpg": "TODO (optionnel) — carte de profondeur du hero (niveaux de gris, blanc = proche)",
+  "elodie-portrait.jpg": "TODO — portrait d'Elodie Notariani (portrait, 4:5)",
+  "elodie-atelier.jpg": "TODO — atelier, matières, échantillons (paysage, 4:3)",
+  "expertise-particuliers.jpg": "TODO — projet particulier (portrait, 4:5)",
+  "expertise-loueurs.jpg": "TODO — projet locatif / meublé (portrait, 4:5)",
+  "expertise-commerces.jpg": "TODO — commerce / restaurant / bureaux (portrait, 4:5)",
+  "projet-01.jpg": "TODO — réalisation 1 (paysage)",
+  "projet-02.jpg": "TODO — réalisation 2 (paysage)",
+  "projet-03.jpg": "TODO — réalisation 3 (portrait)",
+  "projet-04.jpg": "TODO — réalisation 4 (paysage)",
+  "projet-05.jpg": "TODO — réalisation 5 (paysage)",
+  "projet-06.jpg": "TODO — réalisation 6 (portrait)",
+  "og.jpg": "TODO — image de partage réseaux sociaux (1200×630)"
+}

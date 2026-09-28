@@ -1,0 +1,111 @@
+---
+interface Props {
+  head: { eyebrow: string; title: string; titleAccent: string };
+  steps: { n: string; title: string; text: string }[];
+}
+const { head, steps } = Astro.props;
+---
+
+<section class="process section section--earth" id="methode" aria-labelledby="process-title">
+  <div class="container process__grid">
+    <header class="process__head">
+      <p class="eyebrow fade-up">{head.eyebrow}</p>
+      <h2 class="h2" id="process-title">
+        <span data-split>{head.title}</span>
+        <span class="accent" data-split>{head.titleAccent}</span>
+      </h2>
+    </header>
+
+    <ol class="steps">
+      <span class="steps__line" aria-hidden="true"><i data-process-line></i></span>
+      {
+        steps.map((s, i) => (
+          <li class="step fade-up" style={`--delay:${i * 0.08}s`}>
+            <span class="step__n serif">{s.n}</span>
+            <div>
+              <h3 class="step__title h3">{s.title}</h3>
+              <p class="step__text">{s.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: clamp(2rem, 6vw, 8rem);
+    align-items: start;
+  }
+  .process__head {
+    position: sticky;
+    top: 8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .process__head .h2 {
+    display: flex;
+    flex-direction: column;
+  }
+  .process__head .accent {
+    color: var(--sand);
+  }
+  .steps {
+    position: relative;
+    padding-left: clamp(2.5rem, 5vw, 4rem);
+  }
+  .steps__line {
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 1px;
+    background: var(--line);
+  }
+  .steps__line i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--terra);
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 1rem;
+    padding-block: clamp(2rem, 4vw, 3.5rem);
+    border-bottom: 1px solid var(--line);
+  }
+  .step:last-child {
+    border-bottom: 0;
+  }
+  .step__n {
+    font-size: var(--step-2);
+    color: var(--terra);
+    line-height: 1;
+  }
+  .step__title {
+    margin-bottom: 0.8rem;
+  }
+  .step__text {
+    color: var(--fg-muted);
+    max-width: 46ch;
+    text-wrap: pretty;
+  }
+  @media (max-width: 900px) {
+    .process__grid {
+      grid-template-columns: 1fr;
+    }
+    .process__head {
+      position: static;
+    }
+    .step {
+      grid-template-columns: 3rem 1fr;
+    }
+  }
+</style>

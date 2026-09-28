@@ -1,0 +1,36 @@
+---
+import { getImage } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/home/Hero.astro';
+import Marquee from '../../components/home/Marquee.astro';
+import Manifesto from '../../components/home/Manifesto.astro';
+import About from '../../components/home/About.astro';
+import Story from '../../components/home/Story.astro';
+import Expertises from '../../components/home/Expertises.astro';
+import Process from '../../components/home/Process.astro';
+import Projects from '../../components/home/Projects.astro';
+import Cta from '../../components/home/Cta.astro';
+import { HOME_EN as t, IMAGES } from '../../data/site';
+import { img } from '../../lib/images';
+
+const lcp = await getImage({ src: img(IMAGES.hero), widths: [640, 960, 1280, 1920, 2560], sizes: '100vw', format: 'avif' });
+---
+
+<Layout
+  title={t.seoTitle}
+  description={t.seoDescription}
+  path="/en/"
+  altPath="/"
+  locale="en"
+  preloadImage={{ href: lcp.src, imagesrcset: lcp.srcSet.attribute, imagesizes: '100vw' }}
+>
+  <Hero hero={t.hero} locale="en" />
+  <Marquee items={t.marquee} />
+  <Manifesto text={t.manifesto} eyebrow="Manifesto" />
+  <About about={t.about} locale="en" />
+  <Story story={t.story} locale="en" />
+  <Expertises head={{ eyebrow: 'Services', title: 'Three worlds,', titleAccent: 'one standard.' }} items={t.expertises} locale="en" />
+  <Process head={{ eyebrow: 'Method', title: 'From first coffee', titleAccent: 'to final keys.' }} steps={t.process} />
+  <Projects head={{ eyebrow: 'Work', title: 'Places', titleAccent: 'that last.', text: 'A selection of spaces designed by DSIGN IMMO. Every project starts with a conversation.' }} locale="en" />
+  <Cta cta={t.cta} />
+</Layout>
