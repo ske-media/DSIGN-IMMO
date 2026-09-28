@@ -1,0 +1,40 @@
+# Déploiement Netlify depuis GitHub : build statique Astro.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NPM_FLAGS = "--no-audit --no-fund"
+
+# Pas d'espace de rendu serveur : site 100 % statique.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Redirections 301 depuis les anciennes URL de dsignimmo.com : à ajouter ici après audit du site actuel.
+# Netlify gère déjà /page -> /page/ nativement (ne pas ajouter de règle de slash final, elle crée une boucle).
+# [[redirects]]
+#   from = "/ancienne-page"
+#   to = "/architecte-interieur/"
+#   status = 301

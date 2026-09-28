@@ -51,7 +51,17 @@ Leviers : zéro framework client, CSS inliné, polices auto-hébergées et préc
 (`fetchpriority=high`, AVIF), GSAP/Lenis chargés en différé, WebGL chargé après le LCP et uniquement si
 `prefers-reduced-motion` n'est pas actif, CLS = 0.
 
-## Déploiement
+## Déploiement GitHub → Netlify
 
-Sortie statique dans `dist/`. `vercel.json` et `public/_headers` (Netlify / Cloudflare Pages) fournissent les
-en-têtes de sécurité et de cache immuable pour `/_astro/*` et `/fonts/*`.
+Tout est prêt : `netlify.toml` (build `npm run build`, publication `dist/`, Node 22, en-têtes de sécurité,
+cache immuable) et `.nvmrc`.
+
+1. Netlify → **Add new site → Import an existing project → GitHub** → choisir `ske-media/DSIGN-IMMO`.
+2. Branche de production : `main` (fusionnez d'abord la branche de travail). Les autres branches et les pull
+   requests obtiennent automatiquement un *Deploy Preview*.
+3. Les réglages de build sont lus dans `netlify.toml`, rien à saisir à la main.
+4. **Domain management** → ajouter `www.dsignimmo.com` comme domaine principal et `dsignimmo.com` en redirection,
+   puis pointer le DNS (enregistrement CNAME `www` vers `<site>.netlify.app`). HTTPS est automatique.
+
+Rappel : si l'ancien site comporte des URL indexées, ajoutez leurs redirections 301 dans `netlify.toml` avant
+la mise en ligne pour conserver le référencement.
